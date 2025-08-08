@@ -1,9 +1,10 @@
 import React from 'react';
+import { handleScrollTo } from '../utils/scroll';
 
 const InfoBar = () => (
     <div className="max-w-6xl mx-auto px-6">
         <div className="bg-gradient-to-r from-[#BE9A64] to-[#E3C98C] rounded-2xl shadow-lg md:-mt-12 relative z-20 flex flex-col md:flex-row items-center justify-evenly py-4 md:py-5 px-6">
-            <a href="#" className="font-regular text-base md:text-lg text-white hover:underline whitespace-nowrap py-3 md:py-0">
+            <a href="#registration" onClick={(e) => handleScrollTo(e, '#registration')} className="font-regular text-base md:text-lg text-white hover:underline whitespace-nowrap py-3 md:py-0">
                 &larr; Register as Exhibitor
             </a>
 

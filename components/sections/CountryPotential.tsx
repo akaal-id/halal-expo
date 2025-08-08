@@ -1,4 +1,5 @@
 import React from 'react';
+import { handleScrollTo } from '../../utils/scroll';
 
 const FloatingImage = ({ className, delay, src }: { className: string, delay: string, src: string }) => (
     <div 
@@ -44,7 +45,8 @@ export default function CountryPotential() {
 
           <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
               <a 
-                href="#"
+                href="#registration"
+                onClick={(e) => handleScrollTo(e, '#registration')}
                 className="bg-gradient-to-r from-[#F8E07A] to-[#FEFFFF] text-gray-800 font-semibold py-3 px-8 rounded-lg text-base hover:opacity-90 transition-all shadow-lg uppercase tracking-wide"
               >
                 Register as Exhibitor

@@ -1,13 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// A component to animate a number from random values to a final value
+// A component to animate a number from 0 to a final value over 3 seconds
 const AnimatedNumber = ({ value: finalValueString, startAnimation }: { value: string; startAnimation: boolean }) => {
   const [displayValue, setDisplayValue] = useState("0");
-  const animationDuration = 1000; // ms
-  const frameInterval = 50; // ms
+  const animationDuration = 3000; // 3 seconds as requested
+  const frameInterval = 16; // ~60fps for smooth animation
+  const animationRef = useRef<number | null>(null);
+  const hasAnimatedRef = useRef(false);
 
   useEffect(() => {
-    if (!startAnimation) return;
+    if (!startAnimation || hasAnimatedRef.current) return;
 
     const finalValue = parseInt(finalValueString.replace(/,/g, ''), 10);
     if (isNaN(finalValue)) {
@@ -15,22 +17,33 @@ const AnimatedNumber = ({ value: finalValueString, startAnimation }: { value: st
       return;
     }
 
-    // Start the animation interval
-    const interval = setInterval(() => {
-      const randomValue = Math.floor(Math.random() * finalValue * 1.2);
-      setDisplayValue(Math.min(randomValue, finalValue).toLocaleString());
-    }, frameInterval);
+    hasAnimatedRef.current = true;
+    const startTime = Date.now();
 
-    // Set a timeout to stop the animation and set the final value
-    const timeout = setTimeout(() => {
-      clearInterval(interval);
-      setDisplayValue(finalValueString);
-    }, animationDuration);
+    const animate = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      
+      // Use easing function for smoother animation
+      const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+      const currentValue = Math.floor(finalValue * easeOutQuart);
+      
+      setDisplayValue(currentValue.toLocaleString());
 
-    // Cleanup function to clear interval and timeout on unmount
+      if (progress < 1) {
+        animationRef.current = requestAnimationFrame(animate);
+      } else {
+        setDisplayValue(finalValueString);
+      }
+    };
+
+    animationRef.current = requestAnimationFrame(animate);
+
+    // Cleanup function
     return () => {
-      clearInterval(interval);
-      clearTimeout(timeout);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
     };
 
   }, [startAnimation, finalValueString]);

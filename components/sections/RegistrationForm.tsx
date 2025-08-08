@@ -87,6 +87,7 @@ const RegistrationForm = () => {
     });
     const [countryCode, setCountryCode] = useState('+62');
     const [submitted, setSubmitted] = useState(false);
+    const [showValidationError, setShowValidationError] = useState(false);
 
     // Add a timer to revert the thank you message after 5 seconds
     React.useEffect(() => {
@@ -98,10 +99,31 @@ const RegistrationForm = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
+        // Hide validation error when user starts typing
+        if (showValidationError) {
+            setShowValidationError(false);
+        }
+    };
+
+    // Check if all required fields are filled
+    const isFormValid = () => {
+        return form.contactName.trim() !== '' &&
+               form.companyName.trim() !== '' &&
+               form.email.trim() !== '' &&
+               form.mobileNumber.trim() !== '' &&
+               form.businessType.trim() !== '' &&
+               form.marketSector.trim() !== '';
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Validate form before submission
+        if (!isFormValid()) {
+            setShowValidationError(true);
+            return;
+        }
+
         const formData = new URLSearchParams();
         formData.append('entry.1317044927', form.contactName);
         formData.append('entry.1866812893', form.companyName);
@@ -121,6 +143,22 @@ const RegistrationForm = () => {
             body: formData.toString(),
         });
         setSubmitted(true);
+        
+        // Reset form after successful submission
+        setTimeout(() => {
+            setForm({
+                contactName: '',
+                companyName: '',
+                email: '',
+                designation: '',
+                country: 'Indonesia',
+                mobileNumber: '',
+                businessType: '',
+                marketSector: '',
+            });
+            setCountryCode('+62');
+            setShowValidationError(false);
+        }, 5000); // Reset after the thank you message disappears
     };
 
     if (submitted) {
@@ -135,7 +173,7 @@ const RegistrationForm = () => {
     }
 
     return (
-        <section className="bg-white py-24">
+        <section id="registration" className="bg-white py-24">
             <div className="max-w-4xl mx-auto px-6">
                 <h2 className="text-4xl font-light text-center text-gray-900 mb-12 tracking-wider">
                     REGISTER <span className="text-5xl font-semibold text-[#E3C98C]">AS AN EXHIBITOR</span> HERE
@@ -182,6 +220,11 @@ const RegistrationForm = () => {
                         >
                             REGISTER AS EXHIBITOR
                         </button>
+                        {showValidationError && (
+                            <p className="mt-4 text-red-600 text-sm font-medium">
+                                Please complete all required fields marked with (*) before submitting the form.
+                            </p>
+                        )}
                     </div>
                 </form>
             </div>

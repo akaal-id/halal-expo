@@ -1,4 +1,5 @@
 import React from 'react';
+import { handleScrollTo } from '../../utils/scroll';
 
 const Exposure = () => (
     <section className="bg-gray-50 relative overflow-hidden">
@@ -45,7 +46,7 @@ const Exposure = () => (
                 </div>
                 
                 <div className="mt-12 flex flex-wrap gap-4">
-                    <a href="#" className="bg-gradient-to-r from-[#FEFFFF] to-[#F8E07A] text-gray-800 font-semibold py-3 px-6 rounded-lg text-base hover:opacity-90 transition-all shadow-lg uppercase tracking-wider">
+                    <a href="#registration" onClick={(e) => handleScrollTo(e, '#registration')} className="bg-gradient-to-r from-[#FEFFFF] to-[#F8E07A] text-gray-800 font-semibold py-3 px-6 rounded-lg text-base hover:opacity-90 transition-all shadow-lg uppercase tracking-wider">
                         Register as Exhibitor
                     </a>
                     <a href="#" className="bg-gradient-to-r from-[#F8E07A] to-[#AB6E2B] text-white font-semibold py-3 px-6 rounded-lg text-base hover:opacity-90 transition-all shadow-lg uppercase tracking-wider">
